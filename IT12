@@ -1,0 +1,62 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+# Function to apply L-system rules and generate the tree fractal
+def apply_lsystem(axiom, rules, iterations):
+    for _ in range(iterations):
+        axiom = "".join([rules.get(ch, ch) for ch in axiom])
+    return axiom
+
+
+# Function to draw the tree fractal from the L-system string
+def draw_tree(axiom, angle=25, step_size=5):
+    # Initialize the starting position and direction
+    stack = []
+    x, y = 0, 0
+    direction = 90  # Start facing upwards
+    points = [(x, y)]
+
+    # Traverse the L-system string and draw accordingly
+    for command in axiom:
+        if command == "F":
+            # Move forward and record the point
+            x += step_size * np.cos(np.radians(direction))
+            y += step_size * np.sin(np.radians(direction))
+            points.append((x, y))
+        elif command == "+":
+            # Turn right
+            direction -= angle
+        elif command == "-":
+            # Turn left
+            direction += angle
+        elif command == "[":
+            # Save the current state (position and direction)
+            stack.append((x, y, direction))
+        elif command == "]":
+            # Restore the last saved state
+            x, y, direction = stack.pop()
+
+    return points
+
+
+# Define the initial axiom and L-system rules
+axiom = "X"
+rules = {
+    "X": "F+[[X]-X]-F[-FX]+X",  # Replace 'X' with this recursive rule
+    "F": "FF"  # 'F' means draw forward twice
+}
+
+# Apply L-system rules for 6 iterations
+iterations = 12
+axiom = apply_lsystem(axiom, rules, iterations)
+
+# Draw the tree fractal
+points = draw_tree(axiom)
+
+# Plot the tree fractal
+x_vals, y_vals = zip(*points)
+plt.plot(x_vals, y_vals)
+plt.title("Tree Fractal (L-System) - Iterations: {}".format(iterations))
+plt.axis('equal')
+plt.show()
