@@ -1,1 +1,1 @@
-Different expreriments inspired by the intersection of nature and computation.
+Different experiments inspired by the intersection of nature and computation.
